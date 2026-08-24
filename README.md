@@ -183,12 +183,6 @@ pip install distutils
 
 ## 7. Fix `distutils` Error
 
-If you encounter the following error:
-
-```text
-AttributeError: module 'distutils' has no attribute 'version'
-```
-
 Open:
 
 ```text
@@ -207,8 +201,6 @@ if not hasattr(tensorboard, '__version__') or LooseVersion(tensorboard.__version
 from .writer import FileWriter, SummaryWriter  # noqa: F401
 from tensorboard.summary.writer.record_writer import RecordWriter  # noqa: F401
 ```
-
-Then run the image generation command again.
 
 ---
 
