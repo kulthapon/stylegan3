@@ -2,6 +2,8 @@
 
 This guide describes how to install and run **StyleGAN3** on Linux / WSL.
 
+---
+
 ## 0. Install WSL on Drive D
 
 Follow the installation steps from the video below to install WSL on Drive D:
