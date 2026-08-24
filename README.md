@@ -181,48 +181,7 @@ pip install distutils
 
 ---
 
-## 7. Generate Images
-
-Run the following command to generate an image using the pretrained StyleGAN3 model:
-
-```bash
-python gen_images.py \
-    --outdir=out \
-    --trunc=1 \
-    --seeds=2 \
-    --network=https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/versions/1/files/stylegan3-r-afhqv2-512x512.pkl
-```
-
-The generated images will be saved in:
-
-```text
-out/
-```
-
----
-
-## 8. Generate a Video
-
-Generate an interpolation video using the pretrained model:
-
-```bash
-python gen_video.py \
-    --output=lerp.mp4 \
-    --trunc=1 \
-    --seeds=0-31 \
-    --grid=4x2 \
-    --network=https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/versions/1/files/stylegan3-r-afhqv2-512x512.pkl
-```
-
-The output file will be:
-
-```text
-lerp.mp4
-```
-
----
-
-## 9. Fix `distutils` Error
+## 7. Fix `distutils` Error
 
 If you encounter the following error:
 
@@ -252,11 +211,6 @@ from tensorboard.summary.writer.record_writer import RecordWriter  # noqa: F401
 Then run the image generation command again.
 
 ---
-
-## References
-
-* StyleGAN3 Repository: https://github.com/NVlabs/stylegan3
-* CUDA 11.1 Download Archive: https://developer.nvidia.com/cuda-11.1.0-download-archive
 
 ## Notes
 
