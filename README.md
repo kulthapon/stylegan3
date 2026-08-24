@@ -15,7 +15,7 @@ After completing the installation, open WSL and continue with the StyleGAN3 inst
 ## 1. Clone StyleGAN3
 
 ```bash
-git clone https://github.com/NVlabs/stylegan3.git
+git clone https://github.com/kulthapon/stylegan3.git
 cd stylegan3
 ```
 
