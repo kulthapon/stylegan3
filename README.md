@@ -1,7 +1,5 @@
 # StyleGAN3 Installation Guide (Linux / WSL)
 
-This guide describes how to install and run **StyleGAN3** on Linux / WSL.
-
 ---
 
 ## 0. Install WSL on Drive D
