@@ -1,1 +1,287 @@
-How to
+# StyleGAN3 Installation Guide (Linux / WSL)
+
+This guide describes how to install and run **StyleGAN3** on Linux / WSL.
+
+## 1. Clone StyleGAN3
+
+```bash
+git clone https://github.com/NVlabs/stylegan3.git
+cd stylegan3
+```
+
+If you encounter a `Could not resolve host` error, configure the DNS:
+
+```bash
+sudo nano /etc/resolv.conf
+```
+
+Add:
+
+```text
+nameserver 8.8.8.8
+nameserver 1.1.1.1
+```
+
+Save with `Ctrl+O` → `Enter` → `Ctrl+X`.
+
+---
+
+## 2. Install Miniconda
+
+Download Miniconda:
+
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+```
+
+Install Miniconda:
+
+```bash
+bash Miniconda3-py39_4.12.0-Linux-x86_64.sh
+```
+
+Add Miniconda to the PATH:
+
+```bash
+echo 'export PATH="$HOME/miniconda3/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Verify the installation:
+
+```bash
+conda --version
+```
+
+---
+
+## 3. Create the Conda Environment
+
+Inside the `stylegan3` directory, create the environment using the provided `environment.yml` file:
+
+```bash
+conda env create -f environment.yml
+```
+
+Then reload the shell configuration:
+
+```bash
+source ~/.bashrc
+```
+
+---
+
+## 4. Install G++
+
+Install the required build tools:
+
+```bash
+sudo apt update
+sudo apt install build-essential
+```
+
+Verify the installation:
+
+```bash
+g++ --version
+```
+
+---
+
+## 5. Install CUDA
+
+Check the NVIDIA driver and CUDA compatibility:
+
+```bash
+nvidia-smi
+```
+
+For this setup, **CUDA 11.1** is used.
+
+CUDA 11.1 Download Archive:
+
+https://developer.nvidia.com/cuda-11.1.0-download-archive
+
+After installing CUDA, configure `CUDA_HOME`:
+
+```bash
+nano ~/.bashrc
+```
+
+Add:
+
+```bash
+export CUDA_HOME=/usr/local/cuda
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+```
+
+Reload the configuration:
+
+```bash
+source ~/.bashrc
+```
+
+Verify the configuration:
+
+```bash
+echo $CUDA_HOME
+nvcc --version
+```
+
+---
+
+## 6. Install Additional Dependencies
+
+Install Ninja:
+
+```bash
+conda install ninja
+```
+
+Initialize Conda:
+
+```bash
+conda init
+```
+
+Then **close WSL and open it again**.
+
+Navigate back to the StyleGAN3 directory:
+
+```bash
+cd stylegan3
+```
+
+Activate the environment:
+
+```bash
+conda activate stylegan3
+```
+
+Install the required packages:
+
+```bash
+pip install numpy==1.22.4
+pip install psutil
+pip install tensorboard
+pip install setuptools==65.5.0
+pip install distutils
+```
+
+---
+
+## 7. Generate Images
+
+Run the following command to generate an image using the pretrained StyleGAN3 model:
+
+```bash
+python gen_images.py \
+    --outdir=out \
+    --trunc=1 \
+    --seeds=2 \
+    --network=https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/versions/1/files/stylegan3-r-afhqv2-512x512.pkl
+```
+
+The generated images will be saved in:
+
+```text
+out/
+```
+
+---
+
+## 8. Generate a Video
+
+Generate an interpolation video using the pretrained model:
+
+```bash
+python gen_video.py \
+    --output=lerp.mp4 \
+    --trunc=1 \
+    --seeds=0-31 \
+    --grid=4x2 \
+    --network=https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/versions/1/files/stylegan3-r-afhqv2-512x512.pkl
+```
+
+The output file will be:
+
+```text
+lerp.mp4
+```
+
+---
+
+## 9. Fix `distutils` Error
+
+If you encounter the following error:
+
+```text
+AttributeError: module 'distutils' has no attribute 'version'
+```
+
+Open:
+
+```text
+~/miniconda3/envs/stylegan3/lib/python3.9/site-packages/torch/utils/tensorboard/__init__.py
+```
+
+Replace the relevant section with:
+
+```python
+import tensorboard
+from setuptools._distutils.version import LooseVersion
+
+if not hasattr(tensorboard, '__version__') or LooseVersion(tensorboard.__version__) < LooseVersion('1.15'):
+    raise ImportError('TensorBoard logging requires TensorBoard version 1.15 or above')
+
+from .writer import FileWriter, SummaryWriter  # noqa: F401
+from tensorboard.summary.writer.record_writer import RecordWriter  # noqa: F401
+```
+
+Then run the image generation command again.
+
+---
+
+## 10. Save Generated Images as JPG
+
+By default, `gen_images.py` saves generated images as PNG files.
+
+To save them as `.jpg`, open:
+
+```text
+gen_images.py
+```
+
+Find the image-saving code around line 137 and replace it with:
+
+```python
+PIL.Image.fromarray(
+    img[0].cpu().numpy(),
+    'RGB'
+).save(f'{outdir}/seed{seed:04d}.jpg', quality=95)
+```
+
+The generated files will then look like:
+
+```text
+out/
+├── seed0002.jpg
+├── seed0003.jpg
+├── seed0004.jpg
+└── ...
+```
+
+---
+
+## References
+
+* StyleGAN3 Repository: https://github.com/NVlabs/stylegan3
+* CUDA 11.1 Download Archive: https://developer.nvidia.com/cuda-11.1.0-download-archive
+
+## Notes
+
+* Make sure the **NVIDIA Driver, CUDA, Python, PyTorch, and GPU** versions are compatible.
+* For WSL, verify that the NVIDIA GPU is accessible using `nvidia-smi`.
+* Run `source ~/.bashrc` after modifying `~/.bashrc`.
+* If `conda activate stylegan3` does not work, close and reopen WSL after running `conda init`.
