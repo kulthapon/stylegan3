@@ -2,6 +2,16 @@
 
 This guide describes how to install and run **StyleGAN3** on Linux / WSL.
 
+## 0. Install WSL on Drive D
+
+Follow the installation steps from the video below to install WSL on Drive D:
+
+Tutorial: https://www.youtube.com/watch?v=ivF1_aUqSDI
+
+After completing the installation, open WSL and continue with the StyleGAN3 installation steps in the next section.
+
+---
+
 ## 1. Clone StyleGAN3
 
 ```bash
@@ -240,37 +250,6 @@ from tensorboard.summary.writer.record_writer import RecordWriter  # noqa: F401
 ```
 
 Then run the image generation command again.
-
----
-
-## 10. Save Generated Images as JPG
-
-By default, `gen_images.py` saves generated images as PNG files.
-
-To save them as `.jpg`, open:
-
-```text
-gen_images.py
-```
-
-Find the image-saving code around line 137 and replace it with:
-
-```python
-PIL.Image.fromarray(
-    img[0].cpu().numpy(),
-    'RGB'
-).save(f'{outdir}/seed{seed:04d}.jpg', quality=95)
-```
-
-The generated files will then look like:
-
-```text
-out/
-├── seed0002.jpg
-├── seed0003.jpg
-├── seed0004.jpg
-└── ...
-```
 
 ---
 
